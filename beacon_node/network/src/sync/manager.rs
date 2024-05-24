@@ -64,6 +64,7 @@ use std::time::Duration;
 use tokio::sync::mpsc;
 use types::blob_sidecar::FixedBlobSidecarList;
 use types::{BlobSidecar, EthSpec, Hash256, SignedBeaconBlock, Slot};
+use std::{thread, time::Duration};
 
 /// The number of slots ahead of us that is allowed before requesting a long-range (batch)  Sync
 /// from a peer. If a peer is within this tolerance (forwards or backwards), it is treated as a
@@ -470,6 +471,8 @@ impl<T: BeaconChainTypes> SyncManager<T> {
     /// - If there is no range sync and no required backfill and we have synced up to the currently
     /// known peers, we consider ourselves synced.
     fn update_sync_state(&mut self) {
+        //Maybe add a sleep function here? 6 blocks * 10 seconds per block (10 to 12 on average) * 1000 millis/seconds = 60000 millis per block
+        // // thread::sleep(Duration::from_millis(60000));
         let new_state: SyncState = match self.range_sync.state() {
             Err(e) => {
                 crit!(self.log, "Error getting range sync state"; "error" => %e);
